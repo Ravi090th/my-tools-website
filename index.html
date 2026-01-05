@@ -6,102 +6,277 @@
     <title>Space Shooter</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+        }
+
+        #gameContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+        }
+
+        #gameCanvas {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        #hud {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            z-index: 1000;
+        }
+
+        #controls {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            z-index: 1000;
+        }
+
+        .control-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(0, 150, 255, 0.7);
+            border: 3px solid #00ffff;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .control-btn:active {
+            transform: scale(0.9);
+            background: rgba(0, 200, 255, 0.9);
+        }
+
+        #shootBtn {
+            background: rgba(255, 50, 50, 0.7);
+            border-color: #ff3366;
+        }
+
+        #startScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f0c29, #302b63);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            color: white;
+        }
+
+        #startScreen h1 {
+            font-size: 48px;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
+            margin-bottom: 30px;
+        }
+
+        #startBtn {
+            padding: 15px 40px;
+            font-size: 20px;
+            background: linear-gradient(145deg, #00cc66, #009944);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        #startBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #00ff00;
+        }
+
+        .instructions {
+            margin-top: 30px;
+            text-align: center;
+            max-width: 600px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+
+        .instructions h3 {
+            color: #00ffff;
+            margin-bottom: 15px;
+        }
+
+        .instructions ul {
+            list-style: none;
+            text-align: left;
+        }
+
+        .instructions li {
+            margin: 10px 0;
+            color: #ccc;
+        }
+
+        .stat-item {
+            margin: 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-item i {
+            color: #00ffff;
+        }
+
+        #health { color: #ff4444; }
+        #score { color: #44ff44; }
+        #ammo { color: #4488ff; }
+        #level { color: #ff44ff; }
+
+        #gameOverScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            color: white;
+        }
+
+        #gameOverScreen h2 {
+            font-size: 48px;
+            color: #ff4444;
+            margin-bottom: 20px;
+        }
+
+        #restartBtn {
+            padding: 15px 40px;
+            font-size: 20px;
+            background: linear-gradient(145deg, #ff3366, #cc0033);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .control-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+            }
+            
+            #hud {
+                font-size: 16px;
+                padding: 10px;
+            }
+            
+            #startScreen h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="game-header">
-            <h1><i class="fas fa-rocket"></i> SPACE SHOOTER</h1>
-            <div class="controls-info">
-                <p><i class="fas fa-arrow-left"></i> <i class="fas fa-arrow-right"></i> Move | <i class="fas fa-space-shuttle"></i> SPACE Shoot</p>
-            </div>
-        </div>
-
-        <div class="stats-container">
-            <div class="stat-box">
+    <div id="gameContainer">
+        <div id="hud">
+            <div class="stat-item">
                 <i class="fas fa-heart"></i>
                 <span id="health">100</span>
             </div>
-            <div class="stat-box">
+            <div class="stat-item">
                 <i class="fas fa-crosshairs"></i>
                 <span id="score">0</span>
             </div>
-            <div class="stat-box">
-                <i class="fas fa-skull"></i>
-                <span id="enemies">0</span>
-            </div>
-            <div class="stat-box">
+            <div class="stat-item">
                 <i class="fas fa-bolt"></i>
                 <span id="ammo">30</span>
             </div>
-            <div class="stat-box">
+            <div class="stat-item">
                 <i class="fas fa-layer-group"></i>
                 <span id="level">1</span>
             </div>
         </div>
 
-        <div class="game-area">
-            <canvas id="gameCanvas"></canvas>
-            <div class="controls">
-                <button id="leftBtn" class="control-btn"><i class="fas fa-arrow-left"></i></button>
-                <button id="shootBtn" class="control-btn shoot-btn"><i class="fas fa-bullseye"></i></button>
-                <button id="rightBtn" class="control-btn"><i class="fas fa-arrow-right"></i></button>
-            </div>
-        </div>
+        <canvas id="gameCanvas"></canvas>
 
-        <div class="game-controls">
-            <button id="startBtn" class="btn start-btn">
-                <i class="fas fa-play"></i> Start Game
-            </button>
-            <button id="pauseBtn" class="btn pause-btn">
-                <i class="fas fa-pause"></i> Pause
-            </button>
-            <button id="restartBtn" class="btn restart-btn">
-                <i class="fas fa-redo"></i> Restart
-            </button>
-            <div class="difficulty">
-                <label for="difficulty">Difficulty:</label>
-                <select id="difficulty">
-                    <option value="easy">Easy</option>
-                    <option value="medium" selected>Medium</option>
-                    <option value="hard">Hard</option>
-                </select>
-            </div>
+        <div id="controls">
+            <button id="leftBtn" class="control-btn"><i class="fas fa-arrow-left"></i></button>
+            <button id="shootBtn" class="control-btn"><i class="fas fa-bullseye"></i></button>
+            <button id="rightBtn" class="control-btn"><i class="fas fa-arrow-right"></i></button>
         </div>
+    </div>
 
+    <div id="startScreen">
+        <h1><i class="fas fa-rocket"></i> SPACE SHOOTER</h1>
+        <button id="startBtn">START GAME</button>
+        
         <div class="instructions">
-            <h3><i class="fas fa-info-circle"></i> How to Play</h3>
+            <h3>HOW TO PLAY</h3>
             <ul>
-                <li>Use <strong>Arrow Keys</strong> or <strong>Left/Right Buttons</strong> to move your spaceship</li>
-                <li>Press <strong>SPACEBAR</strong> or <strong>Shoot Button</strong> to fire bullets</li>
-                <li>Avoid enemy ships and their bullets</li>
-                <li>Destroy enemies to earn points</li>
-                <li>Collect power-ups for special abilities</li>
-                <li>Each level increases difficulty</li>
+                <li><i class="fas fa-arrow-left"></i> <i class="fas fa-arrow-right"></i> Move your spaceship</li>
+                <li><i class="fas fa-bullseye"></i> Shoot bullets to destroy enemies</li>
+                <li><i class="fas fa-heart"></i> Avoid enemies and their bullets</li>
+                <li><i class="fas fa-star"></i> Collect power-ups for bonuses</li>
+                <li>Survive as long as possible!</li>
             </ul>
         </div>
+    </div>
 
-        <div class="power-ups">
-            <h3><i class="fas fa-star"></i> Power-ups</h3>
-            <div class="powerup-icons">
-                <div class="powerup-icon" title="Health Pack">
-                    <i class="fas fa-heartbeat"></i> +25 Health
-                </div>
-                <div class="powerup-icon" title="Rapid Fire">
-                    <i class="fas fa-bolt"></i> Rapid Fire
-                </div>
-                <div class="powerup-icon" title="Shield">
-                    <i class="fas fa-shield-alt"></i> Shield
-                </div>
-                <div class="powerup-icon" title="Extra Ammo">
-                    <i class="fas fa-boxes"></i> +50 Ammo
-                </div>
-            </div>
+    <div id="gameOverScreen">
+        <h2>GAME OVER</h2>
+        <div class="final-stats">
+            <p>Final Score: <span id="finalScore">0</span></p>
+            <p>Level Reached: <span id="finalLevel">1</span></p>
+            <p>Enemies Destroyed: <span id="finalEnemies">0</span></p>
         </div>
+        <button id="restartBtn">PLAY AGAIN</button>
     </div>
 
-    <div class="mobile-warning">
-        <p>For best experience, play on desktop or rotate your device to landscape mode.</p>
-    </div>
+    <script src="game.js"></script>
+</body>
+    </html>    </div>
 
     <script src="game.js"></script>
 </body>
